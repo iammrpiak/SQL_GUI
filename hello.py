@@ -40,6 +40,8 @@ for i in range(3):
 	insert_expense(title,price,others)
 '''
 
+
+
 def view_expense():
 	with conn:
 		command ='SELECT * FROM expense'
@@ -61,10 +63,22 @@ def delete_expense(ID):
 		c.execute(command,([ID])) # สำหรับคำสั่ง Delete จะต้องกำหนดให้ข้อมูล ID เป็นชนิด List
 		conn.commit()
 
+############Search function ###########
+def search_expense(keyword):
+	#การ delect โดยปกติจะ reference กับ ID
+	with conn:
+		command ='SELECT * FROM expense WHERE ID=(?) OR title LIKE ? OR others LIKE ?'
+		text_search = '%{}%'.format(keyword)
+		c.execute(command,(keyword,text_search, text_search)) # สำหรับคำสั่ง Delete จะต้องกำหนดให้ข้อมูล ID เป็นชนิด List
+		result = c.fetchall()
+	return result
 
 #delete_expense(5)
 
-data = view_expense()
-for d in data:
-	print(d)
+# data = search_expense('7-11')
+# print(data)
 
+with conn:
+	c.execute('SELECT * FROM expense ORDER BY ID DESC LIMIT 1')
+	last_record = c.fetchall()
+	print(last_record)
